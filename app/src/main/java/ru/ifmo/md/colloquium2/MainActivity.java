@@ -43,8 +43,17 @@ public class MainActivity extends Activity {
         adapter = new MyAdapter(MainActivity.this);
         list.setAdapter(adapter);
         db = new MyDatabase(MainActivity.this);
-        end.setVisibility(View.GONE);
         database = db.getWritableDatabase();
+        String query = "SELECT * FROM " + MyDatabase.TABLE_NAME;
+//        Cursor cursor = database.rawQuery(query, null);
+//        if (cursor.getInt(cursor.getColumnIndex(MyDatabase.COLUMN_CNT)) == 1) {
+//            start.setVisibility(View.GONE);
+//            addName.setVisibility(View.GONE);
+//            add.setVisibility(View.GONE);
+//        } else {
+//            end.setVisibility(View.GONE);
+//        }
+//        cursor.close();
         addToList();
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +64,7 @@ public class MainActivity extends Activity {
                 ContentValues cv = new ContentValues();
                 cv.put(MyDatabase.COLUMN_NAME, person);
                 cv.put(MyDatabase.COLUMN_CNT, 0);
+                cv.put(MyDatabase.COLUMN_V, 0);
                 database.insert(MyDatabase.TABLE_NAME, null, cv);
                 adapter.addPerson(new Person(person, 0));
             }
@@ -74,6 +84,9 @@ public class MainActivity extends Activity {
                         cv.put(MyDatabase.COLUMN_NAME, adapter.getIt(position).name);
                         cv.put(MyDatabase.COLUMN_CNT, adapter.getIt(position).cnt);
                         database.update(MyDatabase.TABLE_NAME, cv, MyDatabase.COLUMN_NAME +" = '" +adapter.getIt(position).name + "'", null);
+                        ContentValues cv2 = new ContentValues();
+                        cv2.put(MyDatabase.COLUMN_V, 1);
+                        database.update(MyDatabase.TABLE_NAME, cv2, "voting = 0", null);
                     }
                 });
                 start.setVisibility(View.GONE);
@@ -95,6 +108,9 @@ public class MainActivity extends Activity {
                         Log.d(DEBUG_TAG, "click on person ");
                     }
                 });
+                ContentValues cv2 = new ContentValues();
+                cv2.put(MyDatabase.COLUMN_V, 0);
+                database.update(MyDatabase.TABLE_NAME, cv2, "voting = 1", null);
             }
         });
         clear.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +126,17 @@ public class MainActivity extends Activity {
             }
         });
     }
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
+    protected void onResume() {
+        super.onResume();
+    }
+
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
     public void addToList() {
         String query = "SELECT * FROM " + MyDatabase.TABLE_NAME;
         Log.d(DEBUG_TAG, "add to list");

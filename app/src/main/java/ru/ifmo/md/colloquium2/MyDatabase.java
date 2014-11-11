@@ -19,16 +19,18 @@ public class MyDatabase extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "voting.db";
     private static final int DB_VERSION = 1;
-    public static final String TABLE_NAME = "voting";
+    public static final String TABLE_NAME = "voting2";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_CNT = "cnt";
+    public static final String COLUMN_V = "voting";
 
     public static final String DB_CREATE =
             "create table " + TABLE_NAME + "(" +
                     COLUMN_ID + " integer primary key autoincrement, " +
                     COLUMN_NAME + " text, " +
-                    COLUMN_CNT + " integer" +
+                    COLUMN_CNT + " integer," +
+                    COLUMN_V + " integer " +
                     ");";
     private static final String DB_DELETE = "DROP TABLE IF EXISTS "
             + TABLE_NAME;
